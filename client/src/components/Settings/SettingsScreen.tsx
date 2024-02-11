@@ -11,42 +11,20 @@ import {
   SafeAreaView,
   ScrollView,
 } from "react-native";
-import { ChatInput } from "../Common/CustomInputs";
-import { ChatSendButton } from "../Common/CustomButtons";
 import MessageChannel from "../Common/MessageChannel";
 import { LinearGradient } from "expo-linear-gradient";
 import { MessageType } from "../../utils/types";
 import * as Crypto from "expo-crypto";
 import { generateName } from "../../utils/scripts";
 import { useSettings } from "../../contexts/SettingsContext";
-import { SignOutButton } from "../Common/AuthButtons";
-import { SettingsButton } from "../Common/SettingsButton";
+import { useRouter } from "expo-router";
 
-
-const ChatScreen = () => {
+const SettingsScreen = () => {
   const settings = useSettings();
   const screenWidth = Dimensions.get("window").width;
   const screenHeight = Dimensions.get("window").height;
   const keyboardBehavior = Platform.OS === "ios" ? "padding" : undefined;
 
-  // Message loading and sending logic
-  const [messages, setMessages] = React.useState<MessageType[]>([]);
-  const [message, setMessage] = React.useState<string>("");
-
-  // For when the user sends a message (fired by the send button)
-  const onHandleSubmit = () => {
-    if (message.trim() !== "") {
-      const newMessage: MessageType = {
-        msgID: Crypto.randomUUID(),
-        messageContent: message.trim(),
-        author: generateName(),
-      };
-
-      setMessages([...messages, newMessage]);
-
-      setMessage("");
-    }
-  };
 
   return (
     <View
@@ -70,24 +48,14 @@ const ChatScreen = () => {
                 color: "white",
               }}
             >
-              Chat Screen
+              Settings Screen
             </Text>
           </View>
-          <View style={styles.buttonContainer}>
-            <SignOutButton />
-            <SettingsButton />
-          </View>
-          <View style={styles.chatContainer}>
-            <MessageChannel messages={messages} />
-          </View>
-          <View style={styles.footerContainer}>
-            <ChatInput
-              value={message}
-              onChangeText={(text: string) => {
-                setMessage(text);
-              }}
-            />
-            <ChatSendButton onPress={onHandleSubmit} />
+          <View style={styles.settingsContainer}>
+            <Text style={styles.settings_text}> Change Theme: </Text>
+              <Text style={styles.settings_text}> Change Username: </Text>
+              <Text style={styles.settings_text}> Change Background: </Text>
+              <Text style={styles.settings_text}> Change Profile Picture: </Text>
           </View>
         </View>
       </KeyboardAvoidingView>
@@ -113,30 +81,22 @@ const styles = StyleSheet.create({
     backgroundColor: "black",
   },
 
-  buttonContainer: {
-    flexDirection: "row",
-    justifyContent: "center",
-    padding: 5, 
-  },
-
-  chatContainer: {
+  settingsContainer: {
     width: "100%",
-    flex: 1,
+    height: Dimensions.get("window").height * 0.25,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "left",                                                 
+    marginTop: 150,
+    marginLeft: 50,
   },
 
-  footerContainer: {
-    width: "95%",
-    minHeight: Dimensions.get("window").height * 0.1,
-    maxHeight: Dimensions.get("window").height * 0.15,
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "flex-end",
-    justifyContent: "space-evenly",
-    paddingBottom: Dimensions.get("window").height * 0.02,
-    paddingTop: Dimensions.get("window").height * 0.02,
-    marginTop: 10,
-    borderTopWidth: 1,
+    settings_text: {
+    fontFamily: "Gilroy-ExtraBold",
+    fontSize: 20,
+    marginTop: 100,
   },
+
 });
 
-export default ChatScreen;
+export default SettingsScreen;
